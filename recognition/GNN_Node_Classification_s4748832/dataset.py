@@ -14,7 +14,16 @@ def loader():
     # --- Load edges ---
     edges_file = os.path.join(DATA_PATH, "musae_facebook_edges.csv")
     edges = pd.read_csv(edges_file)
-    edge_index = torch.tensor(edges.values.T, dtype=torch.long)
+    edge_index_ = torch.tensor(edges.values, dtype=torch.long)
+    edge_index = torch.zeros((2*len(edge_index_),2),dtype=torch.long)
+    for i in range(len(edge_index_)):
+        x1 = edge_index_[i][0]
+        x2 = edge_index_[i][1]
+        edge_index[i][0] = x1
+        edge_index[i][1] = x2
+        edge_index[i + len(edge_index_)][0] = x2
+        edge_index[i + len(edge_index_)][1] = x1
+    
     
     labels = {"tvshow":0,"government":1,"company":2,"politician":3}
     target_file = os.path.join(DATA_PATH, "musae_facebook_target.csv")
@@ -34,7 +43,7 @@ def loader():
     X = torch.zeros((len(node_ids),4714))
     for n in node_ids:
         X[int(n),features_dict[str(n)]] = 1
-    return X,edge_index,Y
+    return X,edge_index.T,Y,labels
 
 import numpy as np
 from sklearn.model_selection import KFold
