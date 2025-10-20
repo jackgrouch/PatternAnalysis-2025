@@ -28,9 +28,9 @@ def loader():
     labels = {"tvshow":0,"government":1,"company":2,"politician":3}
     target_file = os.path.join(DATA_PATH, "musae_facebook_target.csv")
     target = pd.read_csv(target_file)
-    Y = torch.zeros(22470)
+    Y = torch.zeros(22470,dtype=torch.long)
     for i,y in enumerate(target["page_type"]):
-        Y[i] = labels[y]
+        Y[i] = int(labels[y])
 
 
     # --- Load node features ---
@@ -40,7 +40,7 @@ def loader():
 
     # Ensure consistent order of nodes
     node_ids = sorted(features_dict.keys(), key=int)
-    X = torch.zeros((len(node_ids),4714))
+    X = torch.zeros((len(node_ids),4714), dtype=torch.float32)
     for n in node_ids:
         X[int(n),features_dict[str(n)]] = 1
     return X,edge_index.T,Y,labels
@@ -73,10 +73,10 @@ class KFoldGraphCV:
         self.train_indices = indices[:split]
         self.K = K
         self.random_state = random_state
-        self.X_KTrain = self._create_X_KTrain()
+        self.X_Full_Train = self._create_X_Full_Train()
         self.folds = self._create_folds()
 
-    def _create_X_KTrain(self):
+    def _create_X_Full_Train(self):
         """Create full KFold graph with test nodes zeroed"""
         X_kfold = self.X.clone()
         X_kfold[self.test_indices] = 0  # zero out test nodes
@@ -91,7 +91,7 @@ class KFoldGraphCV:
             val_nodes   = self.train_indices[val_fold_idx]
             
             # copy X_KFOLD and zero out val nodes for this fold
-            X_fold = self.X_KTrain.clone()
+            X_fold = self.X_Full_Train.clone()
             X_fold = X_fold.to(device=self.device)
             X_fold[val_nodes] = 0
             
@@ -105,7 +105,7 @@ class KFoldGraphCV:
 
     def get_test_graph(self):
         """Return full train/test graph"""
-        X_full_train = self.X_KTrain.clone()
+        X_full_train = self.X_Full_Train.clone()
         X_full_train = X_full_train.to(device=self.device)
         return {
             
@@ -119,3 +119,4 @@ class KFoldGraphCV:
 
     def __getitem__(self, idx):
         return self.folds[idx]
+    
