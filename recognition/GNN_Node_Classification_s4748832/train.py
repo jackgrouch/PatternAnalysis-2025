@@ -5,12 +5,7 @@ from torch_geometric.nn import GCNConv
 import matplotlib.pyplot as plt
 
 
-print("loading...")
-Node_Features_X,Edges,Node_Classes_Y,labels = loader() #22470 x 4714 , 2x |E| , 22470
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-K_FOLDS = 5
-EPS = 0.01
-DataLoader = KFoldGraphCV(Node_Features_X,Node_Classes_Y, K_FOLDS ,device)
+
 
 class GNN(torch.nn.Module):
     
@@ -65,7 +60,9 @@ class Loss(torch.nn.Module):
         
     
 
-def validate(X_full_train:torch.Tensor,fold:dict,gnn:GNN,edges:torch.Tensor,lr,epochs:int):
+def validate(X_full_train:torch.Tensor,fold:dict,gnn:GNN,edges:torch.Tensor,lr,epochs:int,
+            Node_Classes_Y:torch.Tensor,device):
+    EPS = 0.01
     X = fold["X_fold"]
     train_nodes = fold["train_nodes"]
     val_nodes = fold["val_nodes"]
@@ -94,16 +91,25 @@ def validate(X_full_train:torch.Tensor,fold:dict,gnn:GNN,edges:torch.Tensor,lr,e
 
 
 print("validating")
-lr = 0.01    
-epochs = 100
-ensemble = []
-folds = DataLoader.folds
-X_full_train = DataLoader.X_Full_Train
-for i,fold in enumerate(folds):
-    gnn = GNN()
-    losses,vals = validate(X_full_train,fold,gnn,Edges,lr,epochs = 100)
-    print(f"final accuracy on fold {i}: {vals[-1]}")
-    ensemble.append(gnn)
+def train_ensembles(Node_Features_X,Edges,Node_Classes_Y):
+    
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    K_FOLDS = 5
+    
+    DataLoader = KFoldGraphCV(Node_Features_X,Node_Classes_Y, K_FOLDS ,device)
+    lr = 0.01    
+    epochs = 100
+    ensemble = []
+    folds = DataLoader.folds
+    X_full_train = DataLoader.X_Full_Train
+    for i,fold in enumerate(folds):
+        gnn = GNN()
+        losses,vals = validate(X_full_train,fold,gnn,Edges,lr,epochs,Node_Classes_Y,device)
+        print(f"final accuracy on fold {i}: {vals[-1]}")
+        print(f"final loss on fold {i}: {losses[-1]}")
+        ensemble.append(gnn)
+    
+
     
 
     
