@@ -105,6 +105,8 @@ def train_ensembles(Node_Features_X,Edges,Node_Classes_Y):
     for i,fold in enumerate(folds):
         gnn = GNN()
         losses,vals = validate(X_full_train,fold,gnn,Edges,lr,epochs,Node_Classes_Y,device)
+        
+        
         print(f"final accuracy on fold {i}: {vals[-1]}")
         print(f"final loss on fold {i}: {losses[-1]}")
         ensemble.append(gnn)
