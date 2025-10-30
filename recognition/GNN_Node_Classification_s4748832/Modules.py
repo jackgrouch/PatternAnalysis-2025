@@ -4,8 +4,11 @@ from torch_geometric.nn import GCNConv
 
 
 class GNN(torch.nn.Module):
-    
+    '''A GNN that takes nodes with 4714 binary features
+    compresses it to a vector 128 then uses GCNConv layers
+    I use batch normalization so the internal covariant shift problem'''
     def __init__(self):
+        
         in_feats = 128
         hidden_feats = 64
         num_classes = 4
@@ -22,10 +25,15 @@ class GNN(torch.nn.Module):
         
         
     def forward(self,x,edge_index): 
+        ''' This is the actual NN you see
+        how it passes the nodes through the GNN
+        the zero mask is important it stops the 
+        zeroed out nodes from adding any signal '''
         zero_mask = (x.abs().sum(dim=1) == 0).float().unsqueeze(1)
         # 1️ Message passing (layer 1)
         #22470 x 4714 ->  22470 x 128
         x = self.norm1(self.compressor(x))
+    
         x = x * (1 - zero_mask)
         #22470 x 128 -> 22470 x 64
         h1 = self.norm2(self.activation(self.conv_in(x, edge_index)))  

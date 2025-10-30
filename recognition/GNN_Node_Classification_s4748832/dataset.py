@@ -14,6 +14,7 @@ def loader():
     # --- Load edges ---
     edges_file = os.path.join(DATA_PATH, "musae_facebook_edges.csv")
     edges = pd.read_csv(edges_file)
+    # make edges bi-direction 
     edge_index_ = torch.tensor(edges.values, dtype=torch.long)
     edge_index = torch.zeros((2*len(edge_index_),2),dtype=torch.long)
     for i in range(len(edge_index_)):

@@ -6,24 +6,24 @@ from torch_geometric.nn import GCNConv
 
 import matplotlib.pyplot as plt
 
-
-
-
-
-        
-    
+   
 
 def validate(X_full_train:torch.Tensor,fold:dict,gnn:GNN,edges:torch.Tensor,lr,epochs:int,
             Node_Classes_Y:torch.Tensor,device):
-    EPS = 0.01
-    X = fold["X_fold"]
-    train_nodes = fold["train_nodes"]
-    val_nodes = fold["val_nodes"]
+    """ a function that trains and tests the ensembles """
+    EPS = 0.01 # set a convergence value
+    X = fold["X_fold"] # get the training for validation fold k
+    train_nodes = fold["train_nodes"] # train nodes 
+    val_nodes = fold["val_nodes"]# validation nodes
     gnn.to(device)
+    # use adam optimizer
     optimizer = torch.optim.Adam(gnn.parameters(),lr =lr)
+    # define use the special cross entropy loss funtion
     loss_function = Loss()
     losses = []
     vals = []
+    # do full batchw runs this is fine
+    # for the GNN because its a small dataset
     for epoch in range(epochs):
         optimizer.zero_grad()
         pred = gnn(X,edges)
@@ -45,7 +45,7 @@ def validate(X_full_train:torch.Tensor,fold:dict,gnn:GNN,edges:torch.Tensor,lr,e
 
 print("validating")
 def train_ensembles(Node_Features_X,Edges,Node_Classes_Y,train_indices,test_indices):
-    
+    ''' this trains each GNN on different folds'''
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     K_FOLDS = 5
     

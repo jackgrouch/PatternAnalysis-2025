@@ -5,6 +5,7 @@ import torch
 
 def predict(Node_Features_X:torch.Tensor,
         Edges,GNNs:list[GNN]):
+    ''' get the predictions'''
     weight = 1.0 / len(GNNs)
     scores = torch.zeros((len(Node_Features_X),4))
     soft = torch.nn.Softmax(dim=1)
@@ -18,6 +19,7 @@ def predict(Node_Features_X:torch.Tensor,
             
 def calc_test_score(Node_Features_X:torch.Tensor,
         Edges,GNNs:list[GNN],Node_Classes_Y:torch.Tensor,test_nodes):
+    ''' calculate the accuracy which is num_class_correct/total'''
     predictions = predict(Node_Features_X,Edges,GNNs)
     test_acc = (predictions[test_nodes] == Node_Classes_Y[test_nodes]).float().mean()
     return test_acc
