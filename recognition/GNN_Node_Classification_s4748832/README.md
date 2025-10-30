@@ -17,11 +17,11 @@ The predict.py module performs inference using the trained GNN ensemble. Each mo
 
 The Whole pipeline
 There is a main.py option if you want to do everything all in one go! training and then calculating test scores
-Basicly its my test driver script. However you need to download the data file the then the file path to the data loader. you will see a FILE_PATH var just change that to the file containing all the your data . The data loader does not do this all automatically the reason is because it was not letting me download it automatically from a python script. 
+Basicly its my test driver script. However you need to download the datafile and then give the file path to the data loader. you will see a FILE_PATH var just change that to the file containing all the your data. You can find the data at "https://snap.stanford.edu/data/facebook-large-page-page-network.htm" . The data loader does not do this all automatically the reason is because it was not letting me download it automatically from a python script. 
 
 Network Architecture 
 so feature compressing layer which was learned dimensionality reduction that takes a 4714-dimensional binary feature vector to a 128 dimensional vector. Now that we have these compressed feature vectors. I then apply 3 
-GCN layers to the Graph which is GCN(X,Edges), s.t X = (num_nodes, 128) and Edges (num_edges,2) and that for (node_id1,node_id2) in Edges, node1_features = X(node_id1) , node2_features = X(node_id2). a GCN basicly aggregates messages by edge connections look at this node_h1 = w1*x_neighbor1 + ...+ wn*x_neighbor2 then activation function node_h1 = leaky_RELU(node_h1) .Then I do two more of these GCN convolutions which is node_h2 = w1*h1_neighbor1 +...+ wn*h1_neighbor2. Finally our node_h_out is a vector of size 4 which represents logits in the softmax function.  
+GCN layers to the Graph which is GCN(X,Edges), s.t X = (num_nodes, 128) and Edges (num_edges,2) and that for (node_id1,node_id2) in Edges, node1_features = X(node_id1) , node2_features = X(node_id2). a GCN basicly aggregates messages by edge connections look at this node_h1 = w1*x_neighbor1 + ...+ wn*x_neighbor2 then activation function node_h1 = leaky_RELU(node_h1) .Then I do two more of these GCN convolutions which is node_h2 = w1*h1_neighbor1 +...+ wn*h1_neighbor2. Finally our node_h_out is a vector of size 4 which represents scores (logits) in the softmax function.  
 
 
 
@@ -77,9 +77,7 @@ page type: politician predicted page type: politician
 for facebook page node id: 4268
 page type: company predicted page type: company
 
-So it seemed to confused politician and government facebook pages. 
-Which actually makes sense when you think about it politicians are probably going
-to have a lot mutual likes with government pages.
+
 
 example plot
 
@@ -88,9 +86,9 @@ example plot
 ![alt text](images/image-1.png)
 
 ![alt text](images/image-10.png)
-This last plot shows the dimension reduced score vector (logits) of each face book page
-this is for unseen Test nodes so the ensemble of GNNs this is basicly the transformation the 
-GNN learned 
+This last plot shows the dimension reduced score vector (logits) of each face book page,
+this is for unseen test nodes. So, basicly we see the dimension reduced
+learned transformation of the ensemble. 
 
 
 Also for more of these plots check the images directory!
