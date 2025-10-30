@@ -46,25 +46,35 @@ Final Test Accuracy: 0.9492656588554382
 
 
 Some Test Predictions on unseen nodes:
+
 for facebook page node id: 5154
 page type: tvshow predicted page type: tvshow
- for facebook page node id: 5394
+
+for facebook page node id: 5394
 page type: tvshow predicted page type: tvshow
- for facebook page node id: 10857
+
+for facebook page node id: 10857
 page type: tvshow predicted page type: tvshow
- for facebook page node id: 20006
+
+for facebook page node id: 20006
 page type: politician predicted page type: politician
- for facebook page node id: 7736
+
+for facebook page node id: 7736
 page type: politician predicted page type: company
- for facebook page node id: 3206
+
+for facebook page node id: 3206
 page type: company predicted page type: company
- for facebook page node id: 6778
+
+for facebook page node id: 6778
 page type: company predicted page type: company
- for facebook page node id: 20378
+
+for facebook page node id: 20378
 page type: government predicted page type: politician
- for facebook page node id: 12579
+
+for facebook page node id: 12579
 page type: politician predicted page type: politician
- for facebook page node id: 4268
+
+for facebook page node id: 4268
 page type: company predicted page type: company
 
 So it seemed to confused politician and government facebook pages. 
@@ -76,3 +86,4 @@ example plot
 ![alt text](images/image.png)
 ![alt text](images/image-1.png)
 
+Also for more of these plots check the images directory
