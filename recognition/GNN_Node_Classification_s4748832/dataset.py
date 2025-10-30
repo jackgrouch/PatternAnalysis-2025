@@ -26,6 +26,7 @@ def loader():
     
     
     labels = {"tvshow":0,"government":1,"company":2,"politician":3}
+    inv_labels = {0:"tvshow",1:"government",2:"company",3:"politician"}
     target_file = os.path.join(DATA_PATH, "musae_facebook_target.csv")
     target = pd.read_csv(target_file)
     Y = torch.zeros(22470,dtype=torch.long)
@@ -43,7 +44,11 @@ def loader():
     X = torch.zeros((len(node_ids),4714), dtype=torch.float32)
     for n in node_ids:
         X[int(n),features_dict[str(n)]] = 1
-    return X,edge_index.T,Y,labels
+    indices = np.random.permutation(np.arange(len(X)))
+    split = int(0.9 * len(indices))
+    test_indices = indices[split:]
+    train_indices = indices[:split]
+    return (X,Y,train_indices,test_indices,edge_index.T,inv_labels)
 
 import numpy as np
 from sklearn.model_selection import KFold
@@ -52,7 +57,7 @@ from sklearn.model_selection import KFold
 
 class KFoldGraphCV:
     def __init__(self, X: torch.Tensor, Y: torch.Tensor, 
-                K: int, device, random_state: int = 42):
+                K: int, device, train_indices, test_indices , random_state: int = 42 ):
         """
         K-Fold loader for node-level CV with zeroed val/test features.
 
@@ -67,10 +72,8 @@ class KFoldGraphCV:
         self.device = device
         self.X = X
         self.Y = Y
-        indices = np.random.permutation(np.arange(len(X)))
-        split = int(0.9 * len(indices))
-        self.test_indices = indices[split:]
-        self.train_indices = indices[:split]
+        self.test_indices = train_indices
+        self.train_indices = test_indices
         self.K = K
         self.random_state = random_state
         self.X_Full_Train = self._create_X_Full_Train()

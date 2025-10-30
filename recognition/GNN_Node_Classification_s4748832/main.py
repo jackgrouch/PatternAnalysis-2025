@@ -1,13 +1,14 @@
 import torch
 from dataset import KFoldGraphCV,loader
-from train import GNN,validate
+from train import validate
+from Modules import GNN
 from predict import predict , calc_test_score
 import matplotlib.pyplot as plt
 
 K_FOLDS = 5
-Node_Features_X,Edges,Node_Classes_Y,labels = loader()
+Node_Features_X,Node_Classes_Y,train_indices,test_indices,Edges,labels = loader()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-DataLoader = KFoldGraphCV(Node_Features_X,Node_Classes_Y, K_FOLDS ,device)
+DataLoader = KFoldGraphCV(Node_Features_X,Node_Classes_Y, K_FOLDS ,device,train_indices,test_indices)
 
 
 def train_ensembles():
@@ -25,5 +26,6 @@ def train_ensembles():
         print(f"final loss on K-fold training set {i+1}: {losses[-1]}")
         ensemble.append(gnn)
     return ensemble
+
 ensemble = train_ensembles()
-print(f"Final Test Accuracy: {calc_test_score(Node_Features_X,Edges,ensemble,Node_Classes_Y,DataLoader.test_indices)}")
+print(f"Final Test Accuracy: {calc_test_score(Node_Features_X,Edges,ensemble,Node_Classes_Y,test_indices)}")
