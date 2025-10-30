@@ -8,11 +8,12 @@ from sklearn.model_selection import KFold
 import numpy as np
 
 
-def loader():
+def loader(DATA_PATH = None):
     # Path to the dataset folder
-    DATA_PATH = "C:\\Users\\jackg\\OneDrive\\Documents\\COMP3710\\COMP3710_A3\\PatternAnalysis-2025\\recognition\\GNN_Node_Classification_s4748832\\data\\facebook_large\\facebook_large"
+    if DATA_PATH is None:
+        DATA_PATH = "C:\\Users\\jackg\\OneDrive\\Documents\\COMP3710\\COMP3710_A3\\PatternAnalysis-2025\\recognition\\GNN_Node_Classification_s4748832\\data\\facebook_large\\facebook_large"
     # --- Load edges ---
-    edges_file = os.path.join(DATA_PATH, "musae_facebook_edges.csv")
+    edges_file = os.path.join( DATA_PATH, "musae_facebook_edges.csv")
     edges = pd.read_csv(edges_file)
     # make edges bi-direction 
     edge_index_ = torch.tensor(edges.values, dtype=torch.long)
