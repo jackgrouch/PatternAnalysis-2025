@@ -17,7 +17,7 @@ The predict.py module performs inference using the trained GNN ensemble. Each mo
 
 The Whole pipeline
 There is a main.py option if you want to do everything all in one go training and then calculating test scores
-but you dont need this if you dont want.
+Basicly its my test driver script.
 
 Network Architecture 
 so feature compressing layer which was learned dimensionality reduction that takes a 4714-dimensional binary feature vector to a 128 dimensional vector. Now that we have these compressed feature vectors. I then apply 3 
@@ -84,6 +84,13 @@ to have a lot mutual likes with government pages.
 example plot
 
 ![alt text](images/image.png)
+
 ![alt text](images/image-1.png)
 
-Also for more of these plots check the images directory
+![alt text](images/image-10.png)
+This last plot shows the dimension reduced score vector (logits) of each face book page
+this is for unseen Test nodes so the ensemble of GNNs this is basicly the transformation the 
+GNN learned 
+
+
+Also for more of these plots check the images directory!
