@@ -6,7 +6,11 @@ from predict import predict , calc_test_score
 import matplotlib.pyplot as plt
 
 K_FOLDS = 5
-Node_Features_X,Node_Classes_Y,train_indices,test_indices,Edges,labels = loader()
+
+# very important for this script to work you must download the data
+DATA_FILE_PATH = "data\\facebook_large\\facebook_large"
+########################################################
+Node_Features_X,Node_Classes_Y,train_indices,test_indices,Edges,labels = loader(DATA_FILE_PATH)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DataLoader = KFoldGraphCV(Node_Features_X,Node_Classes_Y, K_FOLDS ,device,train_indices,test_indices)
 

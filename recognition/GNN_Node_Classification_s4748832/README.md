@@ -16,8 +16,8 @@ Predicting
 The predict.py module performs inference using the trained GNN ensemble. Each model in the ensemble predicts class probabilities for all nodes via softmax, and the results are averaged to form a combined prediction. The final class label for each node is the argmax of these averaged probabilities. The script also includes a calc_test_score() function that evaluates the ensemble’s accuracy on the held-out test nodes, providing a final performance metric after training. It loads the trained ensemble and does some predictions on the test nodes showing prediction from actual targets.
 
 The Whole pipeline
-There is a main.py option if you want to do everything all in one go training and then calculating test scores
-Basicly its my test driver script.
+There is a main.py option if you want to do everything all in one go! training and then calculating test scores
+Basicly its my test driver script. However you need to download the data file the then the file path to the data loader. you will see a FILE_PATH var just change that to the file containing all the your data . The data loader does not do this all automatically the reason is because it was not letting me download it automatically from a python script. 
 
 Network Architecture 
 so feature compressing layer which was learned dimensionality reduction that takes a 4714-dimensional binary feature vector to a 128 dimensional vector. Now that we have these compressed feature vectors. I then apply 3 
